@@ -4,3 +4,6 @@ class Fish:
         self.reproduce = reproduce
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
+
+    def spawn(self, x, y):
+        return Fish(x, y, self.reproduce)

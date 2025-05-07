@@ -24,9 +24,9 @@ def main():
 
     try:
         while True:
-            my_sea.update
+            my_sea.update()
             my_sea.print_sea()
-            time.sleep(0.1)
+            time.sleep(0.5)
     except KeyboardInterrupt:
         print("\nSimulation arrêtée.")
 
