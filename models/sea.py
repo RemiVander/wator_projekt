@@ -1,5 +1,6 @@
 from models.fish import Fish
 from models.shark import Shark
+import random
 
 class Sea:
 
@@ -42,11 +43,66 @@ class Sea:
         for row in self.sea:
             for cell in row:
                 if cell is None:
-                    print('\033[44m🌊\033[0m ', end='')
-                elif isinstance(cell, Fish):
-                    print('\033[43m🐟\033[0m ', end='')
+                    print('\033[44m🌊\033[0m', end='')
+                elif isinstance(cell, Fish) and not isinstance(cell, Shark):
+                    print('\033[43m🐟\033[0m', end='')
                 elif isinstance(cell, Shark):
-                    print('\033[41m🦈\033[0m ', end='')
+                    print('\033[41m🦈\033[0m', end='')
                 else:
                     print(f'\033[45m{type(cell).__name__[0]}\033[0m ', end='')
             print()
+
+    def get_random_empty_neighbor(self, x, y, sea_snapshot):
+        directions = [(-1,0), (1,0), (0,-1), (0,1)]
+        random.shuffle(directions)
+        for dx, dy in directions:
+            nx = (x + dx) % self.height
+            ny = (y + dy) % self.width
+            if sea_snapshot[nx][ny] is None:
+                return nx, ny
+        return x, y
+
+    def find_nearest_fish(self, shark):
+        min_dist = float('inf')
+        nearest = None
+        for row in self.sea:
+            for cell in row:
+                if isinstance(cell, Fish):
+                    dist = ((shark.x_coordinate - cell.x_coordinate) ** 2 +
+                            (shark.y_coordinate - cell.y_coordinate) ** 2) ** 0.5
+                    if dist < min_dist:
+                        min_dist = dist
+                        nearest = cell
+        return nearest 
+
+    def update(self):
+        new_sea = [[None for _ in range(self.width)] for _ in range(self.height)]
+
+        for x in range(self.height):
+            for y in range(self.width):
+                entity = self.sea[x][y]
+                if isinstance(entity, Fish) and not isinstance(entity, Shark):
+                    new_x, new_y = self.get_random_empty_neighbor(x, y, new_sea)
+                    entity.x_coordinate = new_x
+                    entity.y_coordinate = new_y
+                    new_sea[new_x][new_y] = entity
+
+        for x in range(self.height):
+            for y in range(self.width):
+                entity = self.sea[x][y]
+                if isinstance(entity, Shark):
+                    entity.energy -= 1
+                    if entity.energy <= 0:
+                        continue
+                    target = self.find_nearest_fish(entity)
+                    if target:
+                        new_x, new_y = target.x_coordinate, target.y_coordinate
+                        entity.energy += 2
+                        new_sea[new_x][new_y] = entity
+                    else:
+                        new_x, new_y = self.get_random_empty_neighbor(x, y, new_sea)
+                        entity.x_coordinate = new_x
+                        entity.y_coordinate = new_y
+                        new_sea[new_x][new_y] = entity
+
+        self.sea = new_sea
