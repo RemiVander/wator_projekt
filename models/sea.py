@@ -17,25 +17,24 @@ class Sea:
         if self.sea[x][y] is None:
             self.sea[x][y] = entity
 
-    def move_entity(self, entity, new_x, new_y, grid):
+    def move_entity(self, entity, new_x, new_y, grid, ate_fish=False):
         old_x, old_y = self.wrap_coordinates(entity.x_coordinate, entity.y_coordinate)
         new_x, new_y = self.wrap_coordinates(new_x, new_y)
         entity.age += 1
 
-        target_entity = self.sea[new_x][new_y]
-        if isinstance(entity, Shark) and isinstance(target_entity, Fish):
-            entity.energy += 2 
-            self.sea[new_x][new_y] = None 
-        if grid[new_x][new_y] is None:
-            if entity.age < entity.reproduce:
-                grid[new_x][new_y] = entity
-            elif entity.age == entity.reproduce:
-                new_entity = entity.spawn(old_x, old_y)
-                new_entity.age = 0
-                grid[old_x][old_y] = new_entity
-                grid[new_x][new_y] = entity
-                entity.age = 0
-            entity.x_coordinate, entity.y_coordinate = new_x, new_y
+        entity.x_coordinate, entity.y_coordinate = new_x, new_y
+        grid[new_x][new_y] = entity
+
+        if entity.age >= entity.reproduce:
+            offspring = entity.spawn(old_x, old_y)
+            offspring.age = 0
+            grid[old_x][old_y] = offspring
+            entity.age = 0
+        else:
+            grid[old_x][old_y] = None
+
+
+
 
     def get_entity(self, x, y):
         x, y = self.wrap_coordinates(x, y)
@@ -91,37 +90,36 @@ class Sea:
         for x in range(self.height):
             for y in range(self.width):
                 entity = self.sea[x][y]
+                if entity is None:
+                    continue
 
                 if isinstance(entity, Fish) and not isinstance(entity, Shark):
                     new_x, new_y = self.get_random_empty_neighbor(x, y, new_sea)
-                    self.move_entity(entity, new_x, new_y, new_sea)
+                    if self.sea[new_x][new_y] is None:
+                        self.move_entity(entity, new_x, new_y, new_sea)
 
                 elif isinstance(entity, Shark):
                     entity.energy -= 1
                     if entity.energy <= 0:
-                        continue 
+                        continue  
 
-                    target = self.find_nearest_fish(entity)
-                    if target:
-                        dx = target.x_coordinate - entity.x_coordinate
-                        dy = target.y_coordinate - entity.y_coordinate
-                        step_x = entity.x_coordinate + (1 if dx > 0 else -1 if dx < 0 else 0)
-                        step_y = entity.y_coordinate + (1 if dy > 0 else -1 if dy < 0 else 0)
+                    directions = [(-1,0), (1,0), (0,-1), (0,1)]
+                    random.shuffle(directions)
+                    moved = False
 
-                        step_x, step_y = self.wrap_coordinates(step_x, step_y)
+                    for dx, dy in directions:
+                        nx, ny = self.wrap_coordinates(x + dx, y + dy)
+                        target = self.sea[nx][ny]
+                        if isinstance(target, Fish) and not isinstance(target, Shark):
+                            entity.energy += 2
+                            self.sea[nx][ny] = None 
+                            self.move_entity(entity, nx, ny, new_sea, ate_fish=True)
+                            moved = True
+                            break
 
-                        target_cell = self.sea[step_x][step_y]
-
-                        if isinstance(target_cell, Fish) and not isinstance(target_cell, Shark):
-                            entity.energy += 4
-                            self.sea[step_x][step_y] = None  
-                            self.move_entity(entity, step_x, step_y, new_sea)
-                        elif new_sea[step_x][step_y] is None and self.sea[step_x][step_y] is None:
-                            self.move_entity(entity, step_x, step_y, new_sea)
-                        else:
-                            self.move_entity(entity, x, y, new_sea)
-                    else:
+                    if not moved:
                         new_x, new_y = self.get_random_empty_neighbor(x, y, new_sea)
-                        self.move_entity(entity, new_x, new_y, new_sea)
+                        if self.sea[new_x][new_y] is None:
+                            self.move_entity(entity, new_x, new_y, new_sea)
 
         self.sea = new_sea

@@ -4,7 +4,7 @@ from models.sea import Sea
 from models.fish import Fish
 from models.shark import Shark
 
-def init_entities(sea, num_fish=10, num_sharks=5):
+def init_entities(sea, num_fish=20, num_sharks=2):
     """Ajoute des poissons et des requins à des positions aléatoires dans la mer."""
     for _ in range(num_fish):
         x = random.randint(0, sea.height - 1)
