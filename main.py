@@ -20,6 +20,8 @@ def init_entities(sea, num_fish=20, num_sharks=5):
 
 
 def main():
+    """Initialisation du programme, ajoute des poissons et des requins
+    """
     my_sea = Sea() 
     init_entities(my_sea, num_fish=20, num_sharks=5)
 
