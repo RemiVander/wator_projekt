@@ -1,75 +1,112 @@
 # 🌊 Wa-Tor Projekt
 
-Simulation écologique inspirée du modèle Wa-Tor, mettant en scène l'interaction entre poissons et requins dans un environnement marin.
+Simulation écologique interactive inspirée du modèle **Wa-Tor**, mettant en scène l’interaction entre poissons, requins et chalutiers dans un environnement marin visualisé avec **Pygame**.
+
+---
 
 ## 🐟 Présentation
 
-Ce projet implémente une simulation basée sur le modèle Wa-Tor, où des poissons et des requins évoluent sur une grille représentant un océan. Les entités suivent des règles simples de déplacement, de reproduction et de prédation, offrant une visualisation dynamique des interactions écologiques.
+Ce projet implémente une simulation dynamique basée sur le modèle **Wa-Tor**, dans lequel des entités marines évoluent sur une grille représentant un océan. Chaque entité suit des règles simples de déplacement, de reproduction, de prédation et de mortalité.
+
+Une interface graphique avec **Pygame** permet une visualisation en temps réel des interactions, ainsi que des **statistiques affichées dans une barre latérale** et un **graphe dynamique** de l'évolution des populations.
+
+---
+
+## 🖥️ Interface graphique
+
+- Simulation en **temps réel** avec affichage des entités sous forme d’images (PNG).
+- Couleur de fond bleue pour représenter l’eau.
+- **Poissons** 🐟, **requins** 🦈 et **chalutiers** 🚢 visibles à l’écran.
+- **Barre latérale** :
+  - Compteur de poissons et requins.
+  - Graphe des populations (nombre de poissons/requins au fil du temps).
+
+---
 
 ## 📁 Structure du projet
 
-- `main.py` : Point d'entrée de la simulation.
-- `models/`
-  - `fish.py` : Définit la classe `Fish` avec ses comportements.
-  - `shark.py` : Définit la classe `Shark` avec ses comportements.
-  - `sea.py` : Gère la grille océanique et les interactions entre entités.
-- `README.md` : Ce fichier de documentation.
-- `LICENSE` : Licence MIT.
+```
+wator_projekt/
+├── assets/                  # Images PNG : fish.png, shark.png, trawler.png
+├── models/
+│   ├── fish.py             # Classe Fish
+│   ├── shark.py            # Classe Shark
+│   ├── trawler.py          # Classe Trawler (facultatif)
+│   └── sea.py              # Grille de la mer et logique de simulation
+├── pygame_display.py       # Affichage graphique avec Pygame
+├── main.py                 # Point d’entrée de la simulation
+├── README.md               # Ce fichier
+└── LICENSE                 # Licence MIT
+```
+
+---
 
 ## 🚀 Installation et exécution
 
 ### Prérequis
 
-- Python 3
+- Python 3.x
+- Pygame
 
 ### Installation
 
 ```bash
 git clone https://github.com/RemiVander/wator_projekt.git
 cd wator_projekt
+pip install pygame
 python3 main.py
 ```
 
+---
 
-La simulation s'affichera dans le terminal, avec des emojis représentant les entités :
+## 🎮 Contrôles
 
-    🌊 : Espace vide
+- `P` : Met en pause / relance la simulation
+- `R` : **Réinitialise** la simulation avec de nouvelles entités aléatoires
 
-    🐟 : Poisson
+---
 
-    🦈 : Requin
+## ⚙️ Paramètres configurables (`main.py`)
 
+- `num_fish` : Nombre initial de poissons (ex. `num_fish=30`)
+- `num_sharks` : Nombre initial de requins (ex. `num_sharks=5`)
+- `width`, `height` : Dimensions de la mer
+- `CELL_SIZE` : Taille d'une cellule en pixels
+- `FPS` : Vitesse d'exécution de la simulation
 
-## ⚙️ Paramètres configurables
+---
 
-Les paramètres suivants peuvent être ajustés dans le fichier `main.py` :
+## 🧠 Fonctionnalités principales
 
-- `num_fish` : Nombre initial de poissons dans la mer (ex. `num_fish=20`)
-- `num_sharks` : Nombre initial de requins (ex. `num_sharks=2`)
-- `width` et `height` : Dimensions de la mer (`Sea(width=50, height=30)`)
-- `reproduce_interval` : Intervalle fixe de reproduction des entités (défini en dur dans la classe `Fish` ou `Shark`)
-- `max_age` : Âge maximum des entités avant leur disparition
-- `energy` (requins uniquement) : Niveau d'énergie consommé à chaque tour et regagné en mangeant un poisson
+- **Déplacement** : vers une case vide adjacente
+- **Reproduction** : après un certain intervalle (`reproduce_interval`)
+- **Prédation** : les requins mangent les poissons
+- **Énergie** : les requins perdent de l’énergie à chaque tour, et en regagnent en mangeant
+- **Vieillissement** : mort des entités à `max_age`
+- **Graphique dynamique** : évolution des populations dans le temps
 
+---
 
-## 🧠 Fonctionnalités
+## 📊 Statistiques et visualisation
 
-- **Déplacement** : Les entités se déplacent vers une case vide adjacente.
-- **Reproduction** : Les entités se reproduisent lorsqu'elles atteignent un âge multiple de leur `reproduce_interval`.
-- **Prédation** : Les requins mangent les poissons et regagnent de l'énergie.
-- **Vieillissement** : Toute entité meurt en atteignant son `max_age`.
+- Affichage en temps réel du nombre de poissons et requins
+- Graphe de l’évolution des populations dans la barre latérale
+- Historique glissant basé sur les derniers `n` tours (`max_history_length`)
 
+---
 
 ## 📜 Licence
 
-Ce projet est distribué sous la licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus d'informations.
+Ce projet est sous licence **MIT**.  
+Voir le fichier [LICENSE](LICENSE) pour plus d'informations.
 
+---
 
 ## 🤝 Contribuer
 
 Les contributions sont les bienvenues !  
-Vous pouvez forker le projet, créer une branche, et proposer une pull request via GitHub.
+Forkez le projet, créez une branche, et soumettez une **pull request**.
 
 ---
 
-> GitHub : [https://github.com/RemiVander/wator_projekt](https://github.com/RemiVander/wator_projekt)
+> 📎 GitHub : [https://github.com/RemiVander/wator_projekt](https://github.com/RemiVander/wator_projekt)
