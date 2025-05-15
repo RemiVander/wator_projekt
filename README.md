@@ -10,6 +10,9 @@ Ce projet implémente une simulation dynamique basée sur le modèle **Wa-Tor**,
 
 Une interface graphique avec **Pygame** permet une visualisation en temps réel des interactions, ainsi que des **statistiques affichées dans une barre latérale** et un **graphe dynamique** de l'évolution des populations.
 
+Une présentation du projet est à disposition ici:
+https://prezi.com/view/xknEvc59huHOhe05PPJE/
+
 ---
 
 ## 🖥️ Interface graphique
