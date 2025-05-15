@@ -154,19 +154,20 @@ class Sea:
                 entity.age = 0
             entity.x_coordinate, entity.y_coordinate = new_x, new_y
             self.sea[old_x][old_y] = None
-
     def apply_trawler_effect(self):
         """
-        Supprime tous les poissons dans la position du chalutier et ses cases verticales adjacentes.
+        Supprime tous les poissons dans la zone affectée par le chalutier (rayon défini).
         """
         if self.trawler:
             x, y = self.trawler.x, self.trawler.y
-            for dx in [-1, 0, 1]:
-                for dy in [-1, 0, 1]:
+            radius = self.trawler.radius
+            for dx in range(-radius, radius + 1):
+                for dy in range(-radius, radius + 1):
                     nx = (x + dx) % self.height
                     ny = (y + dy) % self.width
                     if not isinstance(self.sea[nx][ny], Trawler):
                         self.sea[nx][ny] = None
+
 
     def update(self):
         """
@@ -229,5 +230,5 @@ class Sea:
             start_y = 0 if random.choice([True, False]) else self.width - 1
             direction = 1 if start_y == 0 else -1
             start_x = random.randint(0, self.height - 1)
-            self.trawler = Trawler(x=start_x, y=start_y, direction=direction)
+            self.trawler = Trawler(x=start_x, y=start_y, direction=direction, radius=2)
             self.sea[start_x][start_y] = self.trawler

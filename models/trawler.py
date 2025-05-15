@@ -1,34 +1,22 @@
-
 class Trawler:
-    """
-    Représente un chalutier qui se déplace horizontalement dans la mer
-    et détruit les poissons sur son passage.
-
-    Attributes:
-        x (int): Ligne du chalutier dans la grille.
-        y (int): Colonne actuelle du chalutier.
-        direction (int): Direction du déplacement (1 pour droite, -1 pour gauche).
-    """
-
-    def __init__(self, x=0, y=0, direction=1):
+    def __init__(self, x, y, direction, radius=2):
         """
-        Initialise le chalutier avec sa position et sa direction.
-
+        Initialise le chalutier.
+        
         Args:
-            x (int): Ligne où le chalutier commence (défaut: 0).
-            y (int): Colonne initiale (défaut: 0).
-            direction (int): Direction de déplacement (1 pour droite, -1 pour gauche).
+            x (int): Position verticale
+            y (int): Position horizontale
+            direction (int): +1 (vers la droite) ou -1 (vers la gauche)
+            radius (int): Rayon d'effet du chalutier (zone = (2*radius + 1)^2)
         """
         self.x = x
         self.y = y
         self.direction = direction
+        self.radius = radius
 
     def move(self, width):
-        """
-        Déplace le chalutier horizontalement sur une ligne,
-        en tenant compte du rebouclage (mer torique).
-
-        Args:
-            width (int): Largeur de la mer.
-        """
+        """Fait avancer le chalutier horizontalement d'une case selon sa direction."""
         self.y += self.direction
+        if self.y < 0 or self.y >= width:
+            # Le chalutier quitte la grille
+            self.y = -1
